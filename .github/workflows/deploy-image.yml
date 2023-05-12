@@ -43,12 +43,11 @@ jobs:
 #        with:
 #          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image
+      - name: Build Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          push: true
-          platforms: linux/amd64
+          load: true
           tags: ${{ env.IMAGE_NAME}}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }}
           build-args: |
             MATLAB_RELEASE=${{ env.MATLAB_RELEASE }}
@@ -56,3 +55,15 @@ jobs:
             ADDITIONAL_TOOLBOXES=${{ env.ADDITIONAL_TOOLBOXES }}
 #          tags: ${{ steps.meta.outputs.tags }}
 #          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Test Docker image
+        run: |
+          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }} /bin/bash -c "test -d ${{ env.MATLAB_ROOT }}/simulink"
+
+      - name: Push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ env.IMAGE_NAME}}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }}
