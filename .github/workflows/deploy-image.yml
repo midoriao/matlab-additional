@@ -61,7 +61,7 @@ jobs:
 
       - name: Test Docker image
         run: |
-          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }} /bin/bash -c "test -d ${{ env.MATLAB_ROOT }}/simulink"
+          docker run --rm ${{ steps.meta.outputs.tags }} /bin/bash -c "test -d ${{ env.MATLAB_ROOT }}/simulink"
 
       - name: Push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
