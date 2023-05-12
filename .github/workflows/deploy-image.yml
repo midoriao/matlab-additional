@@ -37,24 +37,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Extract metadata (tags, labels) for Docker
-#        id: meta
-#        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-#        with:
-#          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=raw,value=${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }}
 
       - name: Build Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           load: true
-          tags: ${{ env.IMAGE_NAME}}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }}
           build-args: |
             MATLAB_RELEASE=${{ env.MATLAB_RELEASE }}
             MATLAB_ROOT=${{ env.MATLAB_ROOT }}
             ADDITIONAL_TOOLBOXES=${{ env.ADDITIONAL_TOOLBOXES }}
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Test Docker image
         run: |
@@ -66,4 +69,5 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: ${{ env.IMAGE_NAME}}:${{ env.MATLAB_RELEASE }}-${{ env.FEATURE_TAG }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
