@@ -5,13 +5,13 @@ This repository provides docker images for MATLAB with additional toolboxes. The
 ## Pulling the images
 
 ```bash
-docker pull ghcr.io/midoriao/matlab-additional/matlab-additional:r2022b-simulink
+docker pull ghcr.io/midoriao/matlab-additional:r2022b-simulink
 ```
 
 The usage of the images is the same as the official images. For example, to start MATLAB R2022b with Simulink support, run:
 
 ```bash
-docker run -it --rm --shm-size=512M ghcr.io/midoriao/matlab-additional/matlab-additional:r2022b-simulink
+docker run -it --rm --shm-size=512M ghcr.io/midoriao/matlab-additional:r2022b-simulink
 ```
 
 Further options (e.g. VNC support, logging, licensing) are available. See the [official documentation](https://hub.docker.com/r/mathworks/matlab) for more information.
